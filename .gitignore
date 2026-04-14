@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+prometheus_data/
+grafana_data/
+pgdata/
+.env
