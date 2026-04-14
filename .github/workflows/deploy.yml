@@ -1,14 +1,12 @@
-name: 🚀 Full CI/CD Pipeline
+name: 🚀 Enterprise CI/CD (Staging & Production)
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -19,21 +17,36 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 🛠️ Build and Push Docker Image
+      - name: 🛠️ Build and Push
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ekzillar/devops-fastapi:latest 
+          tags: ekzillar/devops-fastapi:latest
 
-  deploy-to-staging:
+  deploy-staging:
     needs: build-and-push
-    runs-on: self-hosted
-    
+    runs-on: [self-hosted, staging]
     steps:
-      - name: 🔄 Update Configs & Deploy
+      - name: 🔄 Pull and Restart Staging
         run: |
           cd ~/devops-snippets
-          git pull origin main 
-          docker compose pull 
+          git pull origin main
+          docker compose pull
+          docker compose up -d
+
+  deploy-production:
+    needs: deploy-staging 
+    runs-on: [self-hosted, production]
+    steps:
+      - name: 🔄 Pull and Restart Production
+        run: |
+          cd ~/devops-snippets
+          # Если это первый запуск на проде, клонируем репу
+          if [ ! -d ".git" ]; then
+            git clone https://github.com/Ekzillar/fullstack-deployment-lab.git .
+          else
+            git pull origin main
+          fi
+          docker compose pull
           docker compose up -d
