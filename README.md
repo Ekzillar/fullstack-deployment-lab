@@ -1,4 +1,3 @@
-```markdown
 # 🚀 Fullstack DevOps Lab: FastAPI + Docker + CI/CD
 
 [![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-orange?style=flat-square&logo=github-actions)](https://github.com/Ekzillar/fullstack-deployment-lab/actions)
