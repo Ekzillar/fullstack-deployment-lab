@@ -45,3 +45,4 @@ def add_snippet(snippet: Snippet):
     db.commit()
     db.close()
     return {"status": "Успешно сохранено в Postgres", "snippet": snippet.title}
+    
