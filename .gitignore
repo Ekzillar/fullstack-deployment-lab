@@ -1,6 +1,12 @@
-venv/
+# Python
 __pycache__/
-prometheus_data/
-grafana_data/
-pgdata/
+*.py[cod]
+venv/
 .env
+
+# Ansible
+*.retry
+ansible.cfg
+
+# OS
+.DS_Store

@@ -1,0 +1,70 @@
+- name: Полная подготовка серверов (Docker + Config)
+  hosts: all
+  become: yes
+  vars_files:
+    - secrets.yml
+
+  tasks:
+    - name: Установить зависимости для Docker
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+        update_cache: yes
+
+    - name: Создать директорию для ключей APT
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Скачать GPG-ключ Docker
+      get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: '0644'
+        force: yes
+
+    - name: Добавить репозиторий Docker
+      apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
+        state: present
+        filename: docker
+
+    - name: Установить Docker Engine и Docker Compose
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+        update_cache: yes
+
+    - name: Добавить пользователя server в группу docker
+      user:
+        name: server
+        groups: docker
+        append: yes
+
+    - name: Убедиться, что директория проекта существует
+      file:
+        path: /home/server/devops-snippets
+        state: directory
+        owner: server
+        group: server
+        mode: '0755'
+
+    - name: Создать файл .env с секретами БД
+      copy:
+        dest: /home/server/devops-snippets/.env
+        content: |
+          DB_USER={{ db_user }}
+          DB_PASSWORD={{ db_password }}
+          DB_NAME={{ db_name }}
+        owner: server
+        mode: '0600'
