@@ -4,7 +4,10 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import declarative_base, sessionmaker
 import os
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://devops_user:***REMOVED***@db:5432/snippets_db")
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise ValueError("КРИТИЧЕСКАЯ ОШИБКА: Переменная окружения DATABASE_URL не задана!")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -45,4 +48,3 @@ def add_snippet(snippet: Snippet):
     db.commit()
     db.close()
     return {"status": "Успешно сохранено в Postgres", "snippet": snippet.title}
-    
