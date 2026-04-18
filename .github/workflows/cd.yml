@@ -31,7 +31,8 @@ jobs:
       - name: 🔄 Pull and Restart Staging
         run: |
           cd ~/devops-snippets
-          git pull origin main
+          git fetch origin
+          git reset --hard origin/main
           docker compose pull
           docker compose up -d
 
@@ -45,7 +46,8 @@ jobs:
           if [ ! -d ".git" ]; then
             git clone https://github.com/Ekzillar/fullstack-deployment-lab.git .
           else
-            git pull origin main
+            git fetch origin
+            git reset --hard origin/main
           fi
           docker compose pull
           docker compose up -d
