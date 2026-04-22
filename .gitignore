@@ -10,3 +10,6 @@ ansible.cfg
 
 # OS
 .DS_Store
+
+# Kubernetes Secrets
+k8s/db-secret.yaml
