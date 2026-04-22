@@ -58,4 +58,3 @@ ansible-playbook -i ansible/hosts.ini ansible/playbook.yml -K -J
 Интегрирован стек мониторинга для отслеживания состояния хостов и контейнеров:
 - **Grafana**: `http://<server-ip>:3000` (Дашборды)
 - **Prometheus**: `http://<server-ip>:9090` (Сбор метрик)
-```
